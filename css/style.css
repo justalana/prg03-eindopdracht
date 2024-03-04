@@ -88,8 +88,10 @@ button:hover {
     box-shadow: 10px 5px 10px #181410;
 }
 
-#extra-room{
+#info-space{
     width: 30vw;
     padding-top: 5vh;
     background-color: white;
+    border-left: solid black;
+    border-width: 2px;
 }

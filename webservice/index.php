@@ -137,7 +137,7 @@ exit;
             </div>
         </div>
 
-        <div id="extra-room">
+        <div id="info-space">
 
         </div>
     </section>
