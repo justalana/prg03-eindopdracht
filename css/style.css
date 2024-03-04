@@ -52,9 +52,10 @@ h1 {
 }
 
 /*BOOK-BOX CONTENT*/
-h3 {
+h2 {
     margin: 20px 20px;
-    font-size: 1.2rem;;
+    font-size: 1.2rem;
+    text-align: center;
 }
 
 button {
@@ -81,7 +82,7 @@ button:hover {
 /*BOOK IMAGES*/
 .book-img{
     position: relative;
-    width: 30%;
+    width: 50%;
     display: block;
     margin: 10px auto;
     box-shadow: 10px 5px 10px #181410;
