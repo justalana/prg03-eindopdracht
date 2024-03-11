@@ -83,13 +83,29 @@ function bookClickHandler(e)
     // console.log(e.target.dataset.id);
     let book = bookDetails[e.target.dataset.name];
 
-    let title = document.createElement('h1');
+    let title = document.createElement('h2');
     title.innerText = `${book.title}`
     dialogContent.appendChild(title);
 
     let image = document.createElement('img');
     image.src = book.cover;
     dialogContent.appendChild(image);
+
+    let author = document.createElement('p');
+    author.innerText = `Author: ${book.author}`
+    dialogContent.appendChild(author);
+
+    let genre = document.createElement('p');
+    genre.innerText = `Genre:`
+    dialogContent.appendChild(genre);
+
+    let ul = document.createElement('ul');
+    genre.appendChild(ul);
+    for (let i = 0; i < book.genre.length; i++) {
+        let li = document.createElement('li')
+        li.innerText = `${book.genre[i]}`;
+        ul.appendChild(li);
+    }
 
 }
 
