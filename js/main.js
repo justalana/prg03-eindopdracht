@@ -3,6 +3,9 @@ window.addEventListener('load', init);
 //Globals
 const apiUrl = 'http://localhost/prg03-eindopdracht/webservice/json.php';
 let bookDetails = {};
+let bookTitles = [];
+let setFaveBooks = [];
+let getFaveBooks = [];
 let bookGallery;
 let dialog;
 let dialogContent;
@@ -10,6 +13,7 @@ let dialogClose;
 
 function init()
 {
+    // localStorage.clear();
     bookGallery = document.getElementById('book-gallery');
     bookGallery.addEventListener('click', bookClickHandler);
 
@@ -18,12 +22,12 @@ function init()
     dialogClose = document.getElementById('modal-close');
     dialogClose.addEventListener('click', dialogCloseHandler);
 
+    // loadFaves();
     getBookData(apiUrl, dataSuccessHandler);
 }
 
 function getBookData(url, successFunction)
 {
-    console.log(url)
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -37,13 +41,14 @@ function getBookData(url, successFunction)
 
 function dataSuccessHandler(books)
 {
-    console.log(books);
     for (const book of books) {
         let newDiv = document.createElement('div');
 
         newDiv.classList.add('book-box');
         newDiv.dataset.title = book.title;
+        newDiv.dataset.fave = "false";
         bookGallery.appendChild(newDiv);
+        bookTitles.push(book.title);
 
         let url = "http://localhost/prg03-eindopdracht/webservice/json.php?id=" + book.id;
         getBookData(url, bookSuccessHandler);
@@ -62,52 +67,92 @@ function bookSuccessHandler(bookData)
     image.src = bookData.cover;
     div.appendChild(image);
 
-    let button = document.createElement('button');
-    button.innerText = "More info";
-    button.dataset.name = bookData.title;
-    div.appendChild(button);
+    let infoButton = document.createElement('button');
+    infoButton.innerText = "More info";
+    infoButton.dataset.name = bookData.title;
+    div.appendChild(infoButton);
+
+    let faveButton = document.createElement('button');
+    faveButton.classList.add('fave-button');
+    faveButton.innerText = "Add to favorites";
+    faveButton.dataset.name = bookData.title;
+    div.appendChild(faveButton);
+
+    let removeFaveButton = document.createElement('button');
+    removeFaveButton.innerText = "Remove from favorites";
+    removeFaveButton.dataset.name = bookData.title;
+    div.appendChild(removeFaveButton);
 
     bookDetails[bookData.title] = bookData;
-    console.log(bookDetails)
 }
 
 function bookClickHandler(e)
 {
-    if(e.target.nodeName !== 'BUTTON') {
-        return;
-    }
-
-    dialog.showModal();
-    dialogContent.innerHTML = "";
-
-    // console.log(e.target.dataset.id);
     let book = bookDetails[e.target.dataset.name];
 
-    let title = document.createElement('h2');
-    title.innerText = `${book.title}`
-    dialogContent.appendChild(title);
+    if(e.target.innerText === "More info") {
+        dialog.showModal();
+        dialogContent.innerHTML = "";
 
-    let image = document.createElement('img');
-    image.src = book.cover;
-    dialogContent.appendChild(image);
+        let title = document.createElement('h2');
+        title.innerText = `${book.title}`
+        dialogContent.appendChild(title);
 
-    let author = document.createElement('p');
-    author.innerText = `Author: ${book.author}`
-    dialogContent.appendChild(author);
+        let image = document.createElement('img');
+        image.src = book.cover;
+        dialogContent.appendChild(image);
 
-    let genre = document.createElement('p');
-    genre.innerText = `Genre:`
-    dialogContent.appendChild(genre);
+        let author = document.createElement('p');
+        author.innerText = `Author: ${book.author}`
+        dialogContent.appendChild(author);
 
-    let ul = document.createElement('ul');
-    genre.appendChild(ul);
-    for (let i = 0; i < book.genre.length; i++) {
-        let li = document.createElement('li')
-        li.innerText = `${book.genre[i]}`;
-        ul.appendChild(li);
+        let genre = document.createElement('p');
+        genre.innerText = `Genre:`
+        dialogContent.appendChild(genre);
+
+        let ul = document.createElement('ul');
+        genre.appendChild(ul);
+        for (let i = 0; i < book.genre.length; i++) {
+            let li = document.createElement('li')
+            li.innerText = `${book.genre[i]}`;
+            ul.appendChild(li);
+        }
+    } if(e.target.innerText === "Add to favorites") {
+        addToFave(book);
+    } if(e.target.innerText === "Remove from favorites") {
+        let item = setFaveBooks.indexOf(book.title);
+        setFaveBooks.splice(item, 1);
+        loadFaves();
+    }
+}
+
+function addToFave(newFave)
+{
+    setFaveBooks.push(newFave.title)
+    // console.log(newFave);
+    localStorage.setItem("setFaveBooks", JSON.stringify(setFaveBooks))
+    loadFaves();
+}
+
+function loadFaves()
+{
+    let stored = localStorage.getItem("setFaveBooks")
+    if (stored) {
+        getFaveBooks = JSON.parse(stored);
+        console.log(getFaveBooks);
+        for (let i = 0; i < getFaveBooks.length; i++) {
+            let element = document.querySelector(`.book-box[data-title='${getFaveBooks[i]}']`);
+            element.dataset.fave = "true";
+            let fave = element.dataset.fave;
+            let title = element.dataset.title;
+            console.log(fave, title)
+        }
+
     }
 
 }
+
+
 
 function dialogCloseHandler(e)
 {

@@ -62,7 +62,7 @@ h1 {
     width: 75%;
 }
 
-.book-box button {
+.book-box button, #modal-content button {
     width: 80%;
     cursor: pointer;
     padding: 10px 0px;
