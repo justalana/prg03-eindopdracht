@@ -122,6 +122,9 @@ function bookClickHandler(e)
     } if(e.target.innerText === "Remove from favorites") {
         let item = setFaveBooks.indexOf(book.title);
         setFaveBooks.splice(item, 1);
+
+        let element = document.querySelector(`.book-box[data-title='${getFaveBooks[book.title]}']`);
+        element.dataset.fave = "false";
         loadFaves();
     }
 }
@@ -143,9 +146,9 @@ function loadFaves()
         for (let i = 0; i < getFaveBooks.length; i++) {
             let element = document.querySelector(`.book-box[data-title='${getFaveBooks[i]}']`);
             element.dataset.fave = "true";
-            let fave = element.dataset.fave;
-            let title = element.dataset.title;
-            console.log(fave, title)
+            // let fave = element.dataset.fave;
+            // let title = element.dataset.title;
+            // console.log(fave, title)
         }
 
     }
