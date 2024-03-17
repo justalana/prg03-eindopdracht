@@ -11,6 +11,9 @@ let dialog;
 let dialogContent;
 let dialogClose;
 
+let removableItem;
+let removeButton;
+
 function init()
 {
     // localStorage.clear();
@@ -22,6 +25,9 @@ function init()
     dialogClose = document.getElementById('modal-close');
     dialogClose.addEventListener('click', dialogCloseHandler);
 
+    removableItem = document.getElementById('remove-item')
+    removeButton = document.getElementById('remove-button')
+    removeButton.addEventListener('click', removeElement)
 
     getBookData(apiUrl, dataSuccessHandler);
 
@@ -156,6 +162,11 @@ function removeFromFave(oldFave)
 
     let element = document.querySelector(`.book-box[data-title='${getFaveBooks[oldFave.title]}']`);
     element.dataset.fave = "false";
+}
+
+function removeElement()
+{
+    removableItem.remove();
 }
 
 function dialogCloseHandler(e)
