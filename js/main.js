@@ -22,8 +22,9 @@ function init()
     dialogClose = document.getElementById('modal-close');
     dialogClose.addEventListener('click', dialogCloseHandler);
 
-    // loadFaves();
+
     getBookData(apiUrl, dataSuccessHandler);
+
 }
 
 function getBookData(url, successFunction)
@@ -53,6 +54,7 @@ function dataSuccessHandler(books)
         let url = "http://localhost/prg03-eindopdracht/webservice/json.php?id=" + book.id;
         getBookData(url, bookSuccessHandler);
     }
+    loadFaves();
 }
 
 function bookSuccessHandler(bookData)
@@ -117,24 +119,13 @@ function bookClickHandler(e)
             li.innerText = `${book.genre[i]}`;
             ul.appendChild(li);
         }
+
     } if(e.target.innerText === "Add to favorites") {
         addToFave(book);
+
     } if(e.target.innerText === "Remove from favorites") {
-        let item = setFaveBooks.indexOf(book.title);
-        setFaveBooks.splice(item, 1);
-
-        let element = document.querySelector(`.book-box[data-title='${getFaveBooks[book.title]}']`);
-        element.dataset.fave = "false";
-        loadFaves();
+        removeFromFave(book)
     }
-}
-
-function addToFave(newFave)
-{
-    setFaveBooks.push(newFave.title)
-    // console.log(newFave);
-    localStorage.setItem("setFaveBooks", JSON.stringify(setFaveBooks))
-    loadFaves();
 }
 
 function loadFaves()
@@ -142,20 +133,30 @@ function loadFaves()
     let stored = localStorage.getItem("setFaveBooks")
     if (stored) {
         getFaveBooks = JSON.parse(stored);
-        console.log(getFaveBooks);
         for (let i = 0; i < getFaveBooks.length; i++) {
             let element = document.querySelector(`.book-box[data-title='${getFaveBooks[i]}']`);
             element.dataset.fave = "true";
-            // let fave = element.dataset.fave;
-            // let title = element.dataset.title;
-            // console.log(fave, title)
         }
-
     }
-
 }
 
+function addToFave(newFave)
+{
+    setFaveBooks = getFaveBooks;
+    setFaveBooks.push(newFave.title)
+    localStorage.setItem("setFaveBooks", JSON.stringify(setFaveBooks))
+    loadFaves();
+}
 
+function removeFromFave(oldFave)
+{
+    setFaveBooks = getFaveBooks;
+    let item = setFaveBooks.indexOf(oldFave.title);
+    setFaveBooks.splice(item, 1);
+
+    let element = document.querySelector(`.book-box[data-title='${getFaveBooks[oldFave.title]}']`);
+    element.dataset.fave = "false";
+}
 
 function dialogCloseHandler(e)
 {
